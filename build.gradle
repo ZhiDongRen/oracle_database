@@ -1,0 +1,63 @@
+plugins {
+    // Apply the java plugin to add support for Java
+    id 'java'
+    // Apply the application plugin to add support for building an application
+    id 'application'
+    // Apply the Maven publish plugin to publish resulting artefacts into a Maven repository
+    id 'maven-publish'
+}
+
+group = externalGroup
+version = externalVersion
+
+// Define the main class for the application
+mainClassName = externalMainClassName
+
+run {
+    // Define default system properties applied to the run task and in the generated start scripts of the distribution
+    //systemProperty "login", "mylogin"
+    //systemProperty "password", "mypassword"
+    // Pass all system properties to the application and the start scripts (overwrite previously defined defaults if any)
+    systemProperties System.getProperties()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = 'build-repository'
+            url = "file://${buildDir}/mvn-repo"
+        }
+    }
+}
+
+dependencies {
+    // Oracle JDBC for Java 8
+    compile group: 'com.oracle.weblogic', name: 'ojdbc8', version:'18.3.0.0.0'
+    compile group: 'com.oracle.weblogic', name: 'xmlparserv2_sans_jaxp_services', version:'12.1.3-0-0'
+    // Oracle XML Database
+    compile group: 'com.oracle.weblogic', name: 'oracle.xdb_12.1.0', version:'12.1.3-0-0'
+    // Oracle Multimedia Database
+    compile group: 'oracle.ord.im', name: 'ordhttp', version:'12.2.0.1.0'
+    compile group: 'oracle.ord.im', name: 'ordim', version:'12.2.0.1.0'
+    compile group: 'oracle.sqlj', name: 'runtime12', version:'18.3.0.0.0'
+    // Oracle SDO Locator Objects
+    compile group: 'oracle.sdo.locator', name: 'sdoapi', version:'12.2.0.1.0'
+    compile group: 'oracle.sdo.locator', name: 'sdogr', version:'12.2.0.1.0'
+    compile group: 'oracle.sdo.locator', name: 'sdonm', version:'12.2.0.1.0'
+    compile group: 'oracle.sdo.locator', name: 'sdotopo', version:'12.2.0.1.0'
+    // Use JUnit test framework
+    testCompile 'junit:junit:4.12'
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    // Use jcenter for resolving dependencies
+    jcenter()
+    // Maven repository for the Database Systems courses
+    maven { url "https://rychly-edu.gitlab.io/dbs/mvn-repo" }
+}
